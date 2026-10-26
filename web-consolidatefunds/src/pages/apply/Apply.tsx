@@ -2,6 +2,7 @@ import { ArrowLeft, ArrowRight, Check, Sparkles } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 import { SiteHeader } from "@/components/SiteHeader";
+import { ownerComplete } from "@/lib/format";
 import { useStore } from "@/lib/store";
 import { analyzeApplication } from "@/lib/underwriting";
 import { cn } from "@/lib/utils";
@@ -49,7 +50,7 @@ function AutosaveIndicator({ lastSaved }: { lastSaved: number | null }) {
 function stepComplete(slug: StepSlug, d: ReturnType<typeof useStore>["draft"]) {
   switch (slug) {
     case "business":
-      return !!(d.business.legalName && d.business.industry && d.business.contactEmail);
+      return !!(d.business.legalName && d.business.industry && d.business.contactEmail) && d.business.owners.every(ownerComplete);
     case "financials":
       return !!(d.financials.monthlyRevenue || d.financials.annualRevenue);
     case "debts":

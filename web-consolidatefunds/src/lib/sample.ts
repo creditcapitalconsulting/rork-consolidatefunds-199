@@ -1,8 +1,24 @@
 import { generateSampleStatement } from "./bank";
 import { DEBT_TYPES } from "./config";
-import type { AppStatus, Application, Asset, AssetCategory, BusinessInfo, Debt, DebtType, Financials, Frequency } from "./types";
+import type { AppStatus, Application, Asset, AssetCategory, BusinessInfo, Debt, DebtType, Financials, Frequency, Owner } from "./types";
 
 export const uid = () => Math.random().toString(36).slice(2, 10) + Date.now().toString(36).slice(-4);
+
+export const blankOwner = (): Owner => ({
+  id: uid(),
+  name: "",
+  title: "",
+  ownership: "",
+  email: "",
+  phone: "",
+  creditRange: "",
+  homeStreet: "",
+  homeCity: "",
+  homeState: "",
+  homeZip: "",
+  ssn: "",
+  dob: "",
+});
 
 export const emptyBusiness = (): BusinessInfo => ({
   legalName: "",
@@ -23,7 +39,7 @@ export const emptyBusiness = (): BusinessInfo => ({
   contactEmail: "",
   contactPhone: "",
   affiliates: "",
-  owners: [{ id: uid(), name: "", title: "", ownership: "", email: "", phone: "", creditRange: "" }],
+  owners: [blankOwner()],
 });
 
 export const emptyFinancials = (): Financials => ({
@@ -131,8 +147,8 @@ export function sampleDraft(): Application {
     contactPhone: "(602) 555-0148",
     affiliates: "Acme Logistics LLC (100% owned by Jordan Smith) — owns the warehouse property",
     owners: [
-      { id: uid(), name: "Jordan Smith", title: "Managing Member", ownership: "80", email: "jordan@acmematerials.com", phone: "(602) 555-0148", creditRange: "700–759" },
-      { id: uid(), name: "Dana Ortiz", title: "Member", ownership: "20", email: "dana@acmematerials.com", phone: "(602) 555-0199", creditRange: "650–699" },
+      { ...blankOwner(), name: "Jordan Smith", title: "Managing Member", ownership: "80", email: "jordan@acmematerials.com", phone: "(602) 555-0148", creditRange: "700–759", homeStreet: "1827 W Palmaire Ave", homeCity: "Phoenix", homeState: "AZ", homeZip: "85021", ssn: "545-31-7890", dob: "04/12/1985" },
+      { ...blankOwner(), name: "Dana Ortiz", title: "Member", ownership: "20", email: "dana@acmematerials.com", phone: "(602) 555-0199", creditRange: "650–699", homeStreet: "77 E Monterey Way Apt 4C", homeCity: "Phoenix", homeState: "AZ", homeZip: "85016", ssn: "602-44-1277", dob: "09/03/1990" },
     ],
   };
   app.financials = {
@@ -267,7 +283,7 @@ function fromSpec(spec: SeedSpec, i: number): Application {
     employees: String(Math.round(spec.monthlyRevenue / 9000)),
     contactName: spec.owner,
     contactEmail: `${spec.owner.split(" ")[0].toLowerCase()}@${spec.name.toLowerCase().replace(/[^a-z]/g, "").slice(0, 12)}.com`,
-    owners: [{ id: uid(), name: spec.owner, title: "Owner", ownership: "100", email: "", phone: "", creditRange: spec.credit }],
+    owners: [{ ...blankOwner(), name: spec.owner, title: "Owner", ownership: "100", creditRange: spec.credit }],
   };
   app.financials = {
     ...emptyFinancials(),

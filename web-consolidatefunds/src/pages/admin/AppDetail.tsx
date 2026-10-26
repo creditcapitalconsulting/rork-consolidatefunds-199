@@ -9,7 +9,7 @@ import { KV, Prelim, Section, Stat } from "@/components/ui-kit";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DOC_CATEGORIES, FACTOR_LABELS, FREQ_SHORT, PAYMENT_STATUSES, STATUS_META, UNDERWRITERS } from "@/lib/config";
 import { costLabel, periodPayment } from "@/lib/finance";
-import { fmtDate, fmtDateTime, months, pct, ratio, timeAgo, usd } from "@/lib/format";
+import { fmtDate, fmtDateTime, maskSsn, months, pct, ratio, timeAgo, usd } from "@/lib/format";
 import { newDebt, uid } from "@/lib/sample";
 import { useStore } from "@/lib/store";
 import type { AppStatus } from "@/lib/types";
@@ -146,7 +146,11 @@ export default function AppDetail() {
               <KV k="Employees" v={b.employees || "—"} />
               <KV k="Contact" v={[b.contactName, b.contactEmail].filter(Boolean).join(" · ") || "—"} />
               {b.owners.filter((o) => o.name).map((o) => (
-                <KV key={o.id} k={`Owner · ${o.title || "—"}`} v={`${o.name} · ${o.ownership || "?"}% · credit ${o.creditRange || "n/a"}`} />
+                <KV
+                  key={o.id}
+                  k={`Owner · ${o.title || "—"}`}
+                  v={`${o.name} · ${o.ownership || "?"}% · credit ${o.creditRange || "n/a"} · DOB ${o.dob || "—"} · SSN ${maskSsn(o.ssn)}${o.homeCity ? ` · ${[o.homeStreet, o.homeCity, o.homeState, o.homeZip].filter(Boolean).join(", ")}` : ""}`}
+                />
               ))}
             </div>
             {b.affiliates && <p className="mt-3 text-sm text-muted-foreground">Affiliates: {b.affiliates}</p>}

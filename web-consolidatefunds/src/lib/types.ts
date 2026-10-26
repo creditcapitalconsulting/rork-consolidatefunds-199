@@ -71,6 +71,12 @@ export interface Owner {
   email: string;
   phone: string;
   creditRange: string;
+  homeStreet: string;
+  homeCity: string;
+  homeState: string;
+  homeZip: string;
+  ssn: string;
+  dob: string;
 }
 
 export interface BusinessInfo {

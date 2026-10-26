@@ -16,8 +16,8 @@ export function Section({ title, description, children, action, className }: { t
   );
 }
 
-export function Grid({ children, cols = 3 }: { children: ReactNode; cols?: 2 | 3 | 4 }) {
-  return <div className={cn("grid gap-x-5 gap-y-4 sm:grid-cols-2", cols === 3 && "lg:grid-cols-3", cols === 4 && "lg:grid-cols-4")}>{children}</div>;
+export function Grid({ children, cols = 3, className }: { children: ReactNode; cols?: 2 | 3 | 4; className?: string }) {
+  return <div className={cn("grid gap-x-5 gap-y-4 sm:grid-cols-2", cols === 3 && "lg:grid-cols-3", cols === 4 && "lg:grid-cols-4", className)}>{children}</div>;
 }
 
 export function Stat({ label, value, sub, accent, className }: { label: string; value: ReactNode; sub?: ReactNode; accent?: boolean; className?: string }) {

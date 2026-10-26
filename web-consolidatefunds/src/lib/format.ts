@@ -44,3 +44,39 @@ export function downloadFile(name: string, content: string, type = "text/csv") {
 }
 
 export const csvRow = (cells: (string | number)[]) => cells.map((c) => `"${String(c).replace(/"/g, '""')}"`).join(",");
+
+// ---------- Owner identity: formatting & validation ----------
+
+/** Progressive SSN mask: 123456789 → 123-45-6789. */
+export const fmtSsn = (v: string) => {
+  const d = v.replace(/\D/g, "").slice(0, 9);
+  if (d.length <= 3) return d;
+  if (d.length <= 5) return `${d.slice(0, 3)}-${d.slice(3)}`;
+  return `${d.slice(0, 3)}-${d.slice(3, 5)}-${d.slice(5)}`;
+};
+
+export const ssnValid = (v: string) => /^(?!000|666|9\d\d)\d{3}-(?!00)\d{2}-(?!0000)\d{4}$/.test(v.trim());
+
+/** Progressive date mask: 04121985 → 04/12/1985. */
+export const fmtDob = (v: string) => {
+  const d = v.replace(/\D/g, "").slice(0, 8);
+  if (d.length <= 2) return d;
+  if (d.length <= 4) return `${d.slice(0, 2)}/${d.slice(2)}`;
+  return `${d.slice(0, 2)}/${d.slice(2, 4)}/${d.slice(4)}`;
+};
+
+export const dobValid = (v: string) => {
+  const m = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(v.trim());
+  if (!m) return false;
+  const [mo, dy, yr] = [Number(m[1]), Number(m[2]), Number(m[3])];
+  if (mo < 1 || mo > 12 || yr < 1900 || yr > new Date().getFullYear()) return false;
+  return dy >= 1 && dy <= new Date(yr, mo, 0).getDate();
+};
+
+export const zipValid = (v: string) => /^\d{5}(-\d{4})?$/.test(v.trim());
+
+export const maskSsn = (v?: string) => (v && v.length >= 4 ? `***-**-${v.slice(-4)}` : "—");
+
+/** A named owner must have a complete home address, SSN and DOB. */
+export const ownerComplete = (o: { name: string; homeStreet: string; homeCity: string; homeState: string; homeZip: string; ssn: string; dob: string }) =>
+  !!(o.name && o.homeStreet && o.homeCity && o.homeState && o.homeZip && ssnValid(o.ssn) && dobValid(o.dob));

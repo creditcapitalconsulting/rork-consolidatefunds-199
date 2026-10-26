@@ -5,7 +5,8 @@ import { toast } from "sonner";
 import { Callout } from "@/components/fields";
 import { KV, Prelim, Stat } from "@/components/ui-kit";
 import { ASSET_TYPES } from "@/lib/config";
-import { pct, ratio, usd } from "@/lib/format";
+import { ownerComplete, pct, ratio, usd } from "@/lib/format";
+import { sendApplicationEmail } from "@/lib/notify";
 import { useStore } from "@/lib/store";
 import type { FullAnalysis } from "@/lib/underwriting";
 
@@ -27,10 +28,18 @@ export function ReviewStep({ analysis }: { analysis: FullAnalysis }) {
   const { draft, submitDraft, resetDraft } = useStore();
   const nav = useNavigate();
   const [consent, setConsent] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [emailStatus, setEmailStatus] = useState<{ ok: boolean; error?: string } | null>(null);
   const { debt, metrics, collateral, scenarios, bank } = analysis;
   const best = scenarios.find((s) => s.best);
   const b = draft.business;
-  const missing = [!b.legalName && "business name", !b.contactEmail && "contact email", !(draft.financials.monthlyRevenue || draft.financials.annualRevenue) && "revenue", draft.debts.length === 0 && "at least one debt"].filter(Boolean) as string[];
+  const missing = [
+    !b.legalName && "business name",
+    !b.contactEmail && "contact email",
+    !(draft.financials.monthlyRevenue || draft.financials.annualRevenue) && "revenue",
+    draft.debts.length === 0 && "at least one debt",
+    !draft.business.owners.every(ownerComplete) && "owner details (home address, SSN, date of birth)",
+  ].filter(Boolean) as string[];
 
   if (draft.submittedAt) {
     return (
@@ -40,6 +49,12 @@ export function ReviewStep({ analysis }: { analysis: FullAnalysis }) {
         <p className="mt-2 text-muted-foreground">
           Reference <span className="mono text-foreground">{draft.ref}</span>. An underwriter will review your file and contact you within one business day. We may request additional documents.
         </p>
+        {emailStatus &&
+          (emailStatus.ok ? (
+            <p className="mt-3 text-sm text-success">A full copy of your application was emailed to our team.</p>
+          ) : (
+            <p className="mt-3 text-sm text-warning">Your application was received, but the email notification failed ({emailStatus.error}). Our team can still see your file — or reach us at applications@consolidatefunds.com.</p>
+          ))}
         <div className="mt-6 flex flex-wrap justify-center gap-3">
           <Link to="/scenarios" className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground">
             View my scenarios <ArrowRight className="h-4 w-4" />
@@ -143,14 +158,23 @@ export function ReviewStep({ analysis }: { analysis: FullAnalysis }) {
             </span>
           </label>
           <button
-            disabled={!consent || missing.length > 0}
+            disabled={!consent || missing.length > 0 || sending}
             onClick={() => {
-              submitDraft();
-              toast.success("Application submitted");
+              setSending(true);
+              try {
+                submitDraft();
+                toast.success("Application submitted");
+              } finally {
+                setSending(false);
+              }
+              sendApplicationEmail(draft).then((r) => {
+                setEmailStatus(r);
+                if (!r.ok) toast.error("Email notification failed", { description: r.error });
+              });
             }}
             className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-5 py-3 font-semibold text-primary-foreground transition-opacity disabled:cursor-not-allowed disabled:opacity-40"
           >
-            <Send className="h-4 w-4" /> Submit application
+            <Send className="h-4 w-4" /> {sending ? "Submitting…" : "Submit application"}
           </button>
         </div>
       </aside>
