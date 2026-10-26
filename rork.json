@@ -1,0 +1,10 @@
+{
+  "apps": [
+    {
+      "name": "ConsolidateFunds",
+      "path": "web-consolidatefunds",
+      "framework": "web"
+    }
+  ],
+  "$schema": "https://rork.com/schema/rork.json"
+}
