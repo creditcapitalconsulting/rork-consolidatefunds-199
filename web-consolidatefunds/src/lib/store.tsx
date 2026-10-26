@@ -227,7 +227,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     [],
   );
   const resetDraft = useCallback(() => setDraft(emptyApplication()), []);
-  const loadSampleDraft = useCallback(() => setDraft(sampleDraft()), []);
+  const loadSampleDraft = useCallback(() => setDraft({ ...sampleDraft(), sample: true }), []);
 
   const submitDraft = useCallback(() => {
     const now = new Date().toISOString();

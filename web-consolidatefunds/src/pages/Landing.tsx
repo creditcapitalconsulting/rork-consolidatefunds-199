@@ -36,7 +36,7 @@ export default function Landing() {
               Financial Solution.
             </h1>
             <p className="mt-7 max-w-xl text-lg leading-relaxed text-muted-foreground">
-              Tell us about every MCA, loan, card, mortgage and tax balance you carry — and every asset you own. Our underwriting engine figures out the consolidation or refinancing structure that frees up the most cash, then we place it with the right funding partner.
+              Tell us about every MCA, loan, card, mortgage and tax balance you carry, and every asset you own. Our underwriting engine figures out the consolidation or refinancing structure that frees up the most cash, then we place it with the right funding partner.
             </p>
             <div className="mt-9 flex flex-wrap items-center gap-x-6 gap-y-4">
               <Link to="/apply" className="group inline-flex items-center gap-2 rounded-xl bg-primary px-7 py-4 text-[17px] font-semibold text-primary-foreground transition-transform hover:-translate-y-0.5">
@@ -100,7 +100,7 @@ export default function Landing() {
         {/* Features */}
         <div className="relative mx-auto grid max-w-[1400px] gap-5 px-5 pb-16 md:grid-cols-3 lg:px-10">
           {[
-            { icon: FileText, title: "Every debt type", body: "MCAs, term loans, lines of credit, mortgages, equipment, factoring, tax debt and judgments — each with its own questions.", link: "#solutions", cta: "See all eligible debt types" },
+            { icon: FileText, title: "Every debt type", body: "MCAs, term loans, lines of credit, mortgages, equipment, factoring, tax debt and judgments, each with its own questions.", link: "#solutions", cta: "See all eligible debt types" },
             { icon: BarChart3, title: "Cash-flow first underwriting", body: "We normalize every payment schedule into true monthly burden and measure what your business can actually sustain.", link: "#how", cta: "How our analysis works" },
             { icon: ShieldCheck, title: "Asset-backed options", body: "Receivables, real estate, equipment and inventory can unlock cheaper, longer financing than cash-flow loans alone.", link: "#assets", cta: "Explore asset-based solutions" },
           ].map((f) => (
@@ -135,12 +135,12 @@ export default function Landing() {
       {/* HOW */}
       <section id="how" className="mx-auto max-w-[1400px] scroll-mt-20 px-5 py-24 lg:px-10">
         <p className="eyebrow">How it works</p>
-        <h2 className="mt-3 max-w-3xl text-4xl font-bold leading-tight sm:text-5xl">We don't lend. We figure out the solution — then find who should fund it.</h2>
+        <h2 className="mt-3 max-w-3xl text-4xl font-bold leading-tight sm:text-5xl">We don't lend. We figure out the solution, then find who should fund it.</h2>
         <div className="mt-14 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
           {[
             { icon: Layers, n: "01", t: "Disclose everything once", d: "Seven short steps. You only see questions that apply to the debts and assets you add." },
             { icon: Search, n: "02", t: "We verify with your bank", d: "Connect or upload statements. We detect lender withdrawals, NSFs and transfers automatically." },
-            { icon: BarChart3, n: "03", t: "Engine builds scenarios", d: "Full, MCA-only, asset-based, partial and hybrid structures — ranked by sustainable cash-flow benefit." },
+            { icon: BarChart3, n: "03", t: "Engine builds scenarios", d: "Full, MCA-only, asset-based, partial and hybrid structures, ranked by sustainable cash-flow benefit." },
             { icon: Landmark, n: "04", t: "We place it with partners", d: "An underwriter reviews, then we match you with the lender best suited to fund the winning structure." },
           ].map((s) => (
             <div key={s.n} className="panel relative p-7">
@@ -161,7 +161,7 @@ export default function Landing() {
               <p className="eyebrow">Debt solutions</p>
               <h2 className="mt-3 text-4xl font-bold sm:text-5xl">If it's an obligation, we can analyze it.</h2>
             </div>
-            <p className="max-w-md text-muted-foreground">MCA factor rates are treated as purchased receivables — never confused with APR. Every schedule, from business-daily ACH to quarterly tax installments, is normalized to the same monthly yardstick.</p>
+            <p className="max-w-md text-muted-foreground">MCA factor rates are treated as purchased receivables, never confused with APR. Every schedule, from business-daily ACH to quarterly tax installments, is normalized to the same monthly yardstick.</p>
           </div>
           <div className="mt-12 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {DEBT_TYPE_ORDER.map((t) => (
@@ -182,7 +182,7 @@ export default function Landing() {
         <div>
           <p className="eyebrow">Asset-based financing</p>
           <h2 className="mt-3 text-4xl font-bold sm:text-5xl">Your balance sheet is leverage. Use it.</h2>
-          <p className="mt-5 text-lg leading-relaxed text-muted-foreground">We estimate preliminary borrowing capacity from every asset you disclose — then use it to replace expensive daily-pay debt with longer, cheaper secured financing.</p>
+          <p className="mt-5 text-lg leading-relaxed text-muted-foreground">We estimate preliminary borrowing capacity from every asset you disclose, then use it to replace expensive daily-pay debt with longer, cheaper secured financing.</p>
           <Link to="/apply" className="mt-8 inline-flex items-center gap-2 rounded-xl border border-border px-6 py-3.5 font-medium hover:border-primary hover:text-primary">
             See what your assets support <ArrowRight className="h-4 w-4" />
           </Link>
@@ -211,7 +211,7 @@ export default function Landing() {
           {[
             ["Are you a lender?", "No. ConsolidateFunds is a broker and analysis platform. We evaluate your full financial position, design the structure that fits, and place it with third-party funding partners."],
             ["Will applying hurt my credit?", "No. Completing the application and receiving scenarios does not trigger a hard credit inquiry. A lender may request one only once you choose to move forward."],
-            ["Why do you ask about every debt?", "Consolidation only works if the new payment is sustainable. Missing an obligation — especially a daily MCA — makes the numbers wrong. We also cross-check bank activity for withdrawals you might have missed."],
+            ["Why do you ask about every debt?", "Consolidation only works if the new payment is sustainable. Missing an obligation, especially a daily MCA, makes the numbers wrong. We also cross-check bank activity for withdrawals you might have missed."],
             ["Can you help if I'm already behind on MCAs?", "Often, yes. Stacked or defaulted MCAs are one of the most common situations we analyze. Restructuring, settlements and asset-based refinances can all be options."],
             ["Is my information secure?", "Data is encrypted in transit and at rest, access is role-based with multi-factor authentication for staff, and every view and change is recorded in an audit trail."],
           ].map(([q, a]) => (
@@ -228,7 +228,7 @@ export default function Landing() {
         <div className="flex flex-col items-start justify-between gap-6 rounded-2xl bg-primary p-10 text-primary-foreground md:flex-row md:items-center lg:p-14">
           <div>
             <h2 className="text-3xl font-bold sm:text-4xl">See your true monthly debt burden in minutes.</h2>
-            <p className="mt-2 text-primary-foreground/75">Your progress saves automatically — finish whenever you're ready.</p>
+            <p className="mt-2 text-primary-foreground/75">Your progress saves automatically; finish whenever you're ready.</p>
           </div>
           <Link to="/apply" className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-background px-7 py-4 font-semibold text-foreground transition-transform hover:-translate-y-0.5">
             Start your application <ArrowRight className="h-5 w-5" />

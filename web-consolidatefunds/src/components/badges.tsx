@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 const RISK = {
   green: { label: "Green", cls: "bg-success/15 text-success border-success/30", dot: "bg-success", long: "Strong candidate" },
   yellow: { label: "Yellow", cls: "bg-warning/15 text-warning border-warning/30", dot: "bg-warning", long: "Review or restructuring required" },
-  red: { label: "Red", cls: "bg-danger/15 text-danger border-danger/30", dot: "bg-danger", long: "High risk — further evaluation" },
+  red: { label: "Red", cls: "bg-danger/15 text-danger border-danger/30", dot: "bg-danger", long: "High risk, further evaluation" },
 } as const;
 
 export const riskMeta = (r: RiskLevel) => RISK[r];

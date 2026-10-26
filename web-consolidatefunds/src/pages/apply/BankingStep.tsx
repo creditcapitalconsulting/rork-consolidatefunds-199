@@ -88,14 +88,14 @@ export function BankingStep({ analysis }: { analysis: FullAnalysis }) {
         </div>
         <input ref={fileRef} type="file" accept=".csv,text/csv" className="hidden" onChange={(e) => onFile(e.target.files)} />
         <Callout>
-          We look for revenue consistency, average daily balance, negative days, NSFs, payroll, taxes and every recurring lender withdrawal — then cross-check them against the debts you listed. Internal transfers are excluded from revenue. PDF statements can be uploaded in the Documents step.
+          We look for revenue consistency, average daily balance, negative days, NSFs, payroll, taxes and every recurring lender withdrawal, then cross-check them against the debts you listed. Internal transfers are excluded from revenue. PDF statements can be uploaded in the Documents step.
         </Callout>
 
         <Dialog open={connectOpen} onOpenChange={(o) => !connecting && setConnectOpen(o)}>
           <DialogContent className="max-w-lg border-border bg-card">
             <DialogHeader>
               <DialogTitle>Choose your bank</DialogTitle>
-              <DialogDescription>Demo connection — generates realistic sample activity from your disclosed debts. Live bank-aggregator connection launches in a later phase.</DialogDescription>
+              <DialogDescription>Demo connection: generates realistic sample activity from your disclosed debts. Live bank-aggregator connection launches in a later phase.</DialogDescription>
             </DialogHeader>
             <div className="grid grid-cols-2 gap-2">
               {BANKS.map((b) => (

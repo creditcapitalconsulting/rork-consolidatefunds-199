@@ -41,7 +41,7 @@ export function DocumentsStep() {
     const text = texts.current.get(doc.id);
     const values = text ? extractTerms(text) : {};
     if (!Object.keys(values).length) {
-      toast.message("No terms could be read automatically", { description: text ? "An underwriter will review this document." : "Automatic reading of PDFs and scans arrives in a later release — an underwriter will review it." });
+      toast.message("No terms could be read automatically", { description: text ? "An underwriter will review this document." : "Automatic reading of PDFs and scans arrives in a later release; an underwriter will review it." });
       return;
     }
     setReview({ doc, values, debtId: doc.linkedDebtId ?? draft.debts[0]?.id ?? "" });
@@ -111,7 +111,7 @@ export function DocumentsStep() {
                     </div>
                   </div>
                   <span className={cn("rounded-full border px-2 py-0.5 text-xs", doc.status === "verified" ? "border-success/40 text-success" : doc.status === "extracted" ? "border-warning/40 text-warning" : "border-border text-muted-foreground")}>
-                    {doc.status === "verified" ? "Verified" : doc.status === "extracted" ? "Confirmed — pending verification" : "Uploaded"}
+                    {doc.status === "verified" ? "Verified" : doc.status === "extracted" ? "Confirmed, pending verification" : "Uploaded"}
                   </span>
                   {(doc.category === "financing_contract" || doc.category === "payoff_letter") && doc.status === "uploaded" && (
                     <button onClick={() => extract(doc)} className="inline-flex items-center gap-1.5 rounded-md border border-border px-2.5 py-1 text-xs hover:border-primary/50 hover:text-primary">

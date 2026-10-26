@@ -39,7 +39,7 @@ export default function Settings() {
           <RotateCcw className="h-4 w-4" /> Restore defaults
         </button>
       </div>
-      {!admin && <p className="mt-4 rounded-lg border border-warning/40 bg-warning/10 px-4 py-3 text-sm text-warning">Read-only — only Admin users can change underwriting rules.</p>}
+      {!admin && <p className="mt-4 rounded-lg border border-warning/40 bg-warning/10 px-4 py-3 text-sm text-warning">Read-only; only Admin users can change underwriting rules.</p>}
 
       <fieldset disabled={!admin} className="mt-6 space-y-6 disabled:opacity-80">
         <Section title="Risk thresholds">

@@ -65,7 +65,7 @@ export function DecisionDialog({ app, analysis, outcome, open, onOpenChange }: {
     updateApp(
       app.id,
       (a) => ({ ...a, status: approve ? "approved" : "declined", decision: { scenarioKey: key, outcome, by: staff?.name ?? "Staff", at: new Date().toISOString(), reason } }),
-      { action: approve ? `Approved structure ${key}` : "Declined", detail: approve ? `${s.name} · ${usd(s.financing)} · ${s.termMonths} mo${reason ? ` — ${reason}` : ""}` : reason },
+      { action: approve ? `Approved structure ${key}` : "Declined", detail: approve ? `${s.name} · ${usd(s.financing)} · ${s.termMonths} mo${reason ? `, ${reason}` : ""}` : reason },
     );
     toast.success(approve ? `Structure ${key} approved` : "Application declined");
     onOpenChange(false);

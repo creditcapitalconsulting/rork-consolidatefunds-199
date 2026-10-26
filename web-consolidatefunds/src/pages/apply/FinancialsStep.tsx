@@ -66,7 +66,7 @@ export function FinancialsStep({ analysis }: { analysis: FullAnalysis }) {
           </div>
           {gap > 500 && (
             <div className="mt-4">
-              <Callout tone="warn">Your listed debts total {usd(debt.monthly)}/mo — {usd(gap)} more than your estimate. Daily and weekly payments often add up faster than expected.</Callout>
+              <Callout tone="warn">Your listed debts total {usd(debt.monthly)}/mo, which is {usd(gap)} more than your estimate. Daily and weekly payments often add up faster than expected.</Callout>
             </div>
           )}
           {debt.rows.length === 0 && <p className="mt-4 text-xs text-muted-foreground">Add your debts in the next step to see DSCR and burden.</p>}

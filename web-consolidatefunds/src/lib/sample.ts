@@ -145,7 +145,7 @@ export function sampleDraft(): Application {
     contactName: "Jordan Smith",
     contactEmail: "jordan@acmematerials.com",
     contactPhone: "(602) 555-0148",
-    affiliates: "Acme Logistics LLC (100% owned by Jordan Smith) — owns the warehouse property",
+    affiliates: "Acme Logistics LLC (100% owned by Jordan Smith), which owns the warehouse property",
     owners: [
       { ...blankOwner(), name: "Jordan Smith", title: "Managing Member", ownership: "80", email: "jordan@acmematerials.com", phone: "(602) 555-0148", creditRange: "700–759", homeStreet: "1827 W Palmaire Ave", homeCity: "Phoenix", homeState: "AZ", homeZip: "85021", ssn: "545-31-7890", dob: "04/12/1985" },
       { ...blankOwner(), name: "Dana Ortiz", title: "Member", ownership: "20", email: "dana@acmematerials.com", phone: "(602) 555-0199", creditRange: "650–699", homeStreet: "77 E Monterey Way Apt 4C", homeCity: "Phoenix", homeState: "AZ", homeZip: "85016", ssn: "602-44-1277", dob: "09/03/1990" },
@@ -178,7 +178,7 @@ export function sampleDraft(): Application {
       collectionsToDate: 72000,
       remainingReceivables: 66000,
       fundingDate: "2026-03-02",
-      reconciliation: "Included — not yet requested",
+      reconciliation: "Included, not yet requested",
       defaultStatus: "Performing",
       uccPosition: "1st position",
       earlyPayoffDiscount: 4800,
@@ -196,7 +196,7 @@ export function sampleDraft(): Application {
       collectionsToDate: 17500,
       remainingReceivables: 91250,
       fundingDate: "2026-08-04",
-      reconciliation: "Included — not yet requested",
+      reconciliation: "Included, not yet requested",
       defaultStatus: "Performing",
       uccPosition: "2nd position",
       liens: "UCC-1 filed 08/2026",
@@ -232,7 +232,7 @@ export function sampleDraft(): Application {
     D("credit_card", "Amex", 1000, "monthly", 31800, { balance: 31800, rate: 27.9, creditLimit: 40000 }, { structure: "revolving" }),
   ];
   app.assets = [
-    A("receivables", { totalAR: 186000, aging0: 118000, aging31: 44000, aging61: 14000, aging90: 10000, topCustomerPct: 18, collectibility: "Strong — rarely disputed", factored: "None" }),
+    A("receivables", { totalAR: 186000, aging0: 118000, aging31: 44000, aging61: 14000, aging90: 10000, topCustomerPct: 18, collectibility: "Strong, rarely disputed", factored: "None" }),
     A("real_estate", { address: "4120 Industrial Blvd, Phoenix AZ", propertyType: "Industrial / warehouse", marketValue: 640000, mortgageBalance: 0, otherLiens: 0, ownership: "Affiliated entity", ownershipPct: 100, rentalIncome: 6500 }),
     A("equipment", { description: "Delivery & yard equipment", make: "CAT", model: "GP25N", year: 2023, estimatedValue: 86000, existingFinancing: 48500, ownership: "Financed" }),
     A("vehicle", { make: "Isuzu", model: "NPR-HD Flatbed", year: 2022, mileage: 61000, estimatedValue: 52000, lienBalance: 0, vin: "54DC4W1B5NS801123" }),

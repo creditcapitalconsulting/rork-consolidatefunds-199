@@ -286,7 +286,7 @@ export default function Queue() {
             <span className={cn("grid h-11 w-11 shrink-0 place-items-center rounded-full text-xl font-bold", sa.uw.risk === "green" ? "bg-success text-black" : sa.uw.risk === "yellow" ? "bg-warning text-black" : "bg-danger text-white")}>!</span>
             <div>
               <div className={cn("text-lg font-semibold", sa.uw.risk === "green" ? "text-success" : sa.uw.risk === "yellow" ? "text-warning" : "text-danger")}>
-                {riskMeta(sa.uw.risk).label} – {riskMeta(sa.uw.risk).long.toLowerCase()}
+                {riskMeta(sa.uw.risk).label} · {riskMeta(sa.uw.risk).long.toLowerCase()}
               </div>
               <p className="text-sm text-foreground/85">
                 Score <span className="num font-semibold">{sa.uw.score}</span>/100 across {sa.uw.factors.length} weighted factors.
@@ -334,7 +334,7 @@ export default function Queue() {
             {selected.notes[0] && (
               <div className="mt-3 rounded-xl border border-border bg-background/50 p-4 text-sm leading-relaxed text-foreground/90">
                 {selected.notes[0].text}
-                <div className="mt-2 text-xs text-muted-foreground">— {selected.notes[0].author}</div>
+                <div className="mt-2 text-xs text-muted-foreground">{selected.notes[0].author}</div>
               </div>
             )}
             <div className="mt-3 flex gap-2">

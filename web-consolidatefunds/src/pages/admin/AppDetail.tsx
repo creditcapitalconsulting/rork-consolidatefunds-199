@@ -108,7 +108,7 @@ export default function AppDetail() {
             <Stat label="Best structure" value={best.key} sub={`${usd(best.monthlyImprovement, { sign: true, compact: true })}/mo`} accent />
           </div>
           <div className="grid gap-5 lg:grid-cols-2">
-            <Section title="Risk factors" description={`Weighted score — Green ≥ ${settings.thresholds.green}, Yellow ≥ ${settings.thresholds.yellow}.`}>
+            <Section title="Risk factors" description={`Weighted score: Green ≥ ${settings.thresholds.green}, Yellow ≥ ${settings.thresholds.yellow}.`}>
               <ul className="space-y-3.5">
                 {a.uw.factors.map((f) => (
                   <li key={f.key}>
@@ -256,7 +256,7 @@ export default function AppDetail() {
                   d.creditor = l.name;
                   d.frequency = lenderToFrequency(l.frequency);
                   d.fields = { payment: String(Math.round(l.typicalAmount)), actualAch: String(Math.round(l.typicalAmount)), payoff: String(Math.round(l.typicalAmount * 60)) };
-                  updateApp(app.id, (x) => ({ ...x, debts: [...x.debts, d] }), { action: "Undisclosed debt added", detail: `${l.name} (payoff estimated — verify)` });
+                  updateApp(app.id, (x) => ({ ...x, debts: [...x.debts, d] }), { action: "Undisclosed debt added", detail: `${l.name} (payoff estimated, to verify)` });
                   toast.success(`${l.name} added with an estimated payoff`, { description: "Request a payoff letter to confirm." });
                 }}
               />
@@ -398,7 +398,7 @@ export default function AppDetail() {
               <ScenarioCard key={s.key} s={s} onDetails={() => setDetail(s)} />
             ))}
           </div>
-          <Section title={`Before vs after — Option ${best.key}`}>
+          <Section title={`Before vs after: Option ${best.key}`}>
             <BeforeAfterChart debt={a.debt} s={best} />
           </Section>
         </TabsContent>

@@ -33,7 +33,7 @@ export function DebtsStep({ analysis }: { analysis: FullAnalysis }) {
           <EmptyState
             icon={<Receipt className="h-8 w-8" />}
             title="No debts added yet"
-            body="Add every MCA, loan, line of credit, card, lease or tax obligation — the more complete, the better the structure we can find."
+            body="Add every MCA, loan, line of credit, card, lease or tax obligation. The more complete, the better the structure we can find."
             action={
               <button onClick={() => setPicker(true)} className="rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground">
                 Add your first debt

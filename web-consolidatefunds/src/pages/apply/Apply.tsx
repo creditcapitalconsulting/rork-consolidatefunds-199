@@ -1,8 +1,9 @@
-import { ArrowLeft, ArrowRight, Check, Sparkles } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, Eraser, FlaskConical, Sparkles } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 import { SiteHeader } from "@/components/SiteHeader";
 import { ownerComplete } from "@/lib/format";
+import { toast } from "sonner";
 import { useStore } from "@/lib/store";
 import { analyzeApplication } from "@/lib/underwriting";
 import { cn } from "@/lib/utils";
@@ -16,11 +17,11 @@ import { ReviewStep } from "./ReviewStep";
 
 export const STEPS = [
   { slug: "business", label: "Business", title: "Tell us about your business", sub: "Basic company, contact and ownership details." },
-  { slug: "financials", label: "Financials", title: "Business financials", sub: "Revenue, profitability and balance sheet — estimates are fine for now." },
+  { slug: "financials", label: "Financials", title: "Business financials", sub: "Revenue, profitability and balance sheet; estimates are fine for now." },
   { slug: "debts", label: "Debts", title: "Your Existing Debts", sub: "Add and configure your business debts so we can find your best consolidation options." },
   { slug: "assets", label: "Assets", title: "Assets & collateral", sub: "Assets can unlock lower-cost, longer-term structures. Values are preliminary until verified." },
   { slug: "banking", label: "Banking", title: "Business banking", sub: "Bank activity lets us verify revenue and every recurring lender withdrawal." },
-  { slug: "documents", label: "Documents", title: "Supporting documents", sub: "Upload what you have — we'll request anything else we need." },
+  { slug: "documents", label: "Documents", title: "Supporting documents", sub: "Upload what you have; we'll request anything else we need." },
   { slug: "review", label: "Review", title: "Review & submit", sub: "Check everything once more. You can edit any section before submitting." },
 ] as const;
 
@@ -69,7 +70,7 @@ function stepComplete(slug: StepSlug, d: ReturnType<typeof useStore>["draft"]) {
 export default function Apply() {
   const { step } = useParams();
   const nav = useNavigate();
-  const { draft, lastSaved, loadSampleDraft, settings } = useStore();
+  const { draft, lastSaved, loadSampleDraft, resetDraft, settings } = useStore();
   const idx = STEPS.findIndex((s) => s.slug === step);
   const analysis = useMemo(() => analyzeApplication(draft, settings), [draft, settings]);
 
@@ -85,6 +86,13 @@ export default function Apply() {
   if (idx < 0) return <Navigate to="/apply/business" replace />;
   const cur = STEPS[idx];
   const empty = !draft.business.legalName && draft.debts.length === 0;
+  const isSample = draft.sample === true;
+
+  const clearSample = () => {
+    resetDraft();
+    toast.success("Sample data cleared", { description: "The wizard is now empty. Start entering your own business details." });
+    nav("/apply/business");
+  };
 
   const go = (i: number) => nav(`/apply/${STEPS[i].slug}`);
 
@@ -108,7 +116,19 @@ export default function Apply() {
           </div>
         </div>
 
-        {empty && (
+        {isSample ? (
+          <div className="mt-6 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-warning/30 bg-warning/[0.07] px-5 py-3.5">
+            <p className="flex items-center gap-2.5 text-sm">
+              <FlaskConical className="h-4 w-4 shrink-0 text-warning" /> You're viewing sample data for a demo business. Clear it when you're ready to start your own application.
+            </p>
+            <button
+              onClick={clearSample}
+              className="inline-flex items-center gap-2 rounded-lg border border-warning/50 px-4 py-2 text-sm font-semibold text-warning transition-colors hover:bg-warning/10"
+            >
+              <Eraser className="h-4 w-4" /> Clear sample data
+            </button>
+          </div>
+        ) : empty && (
           <div className="mt-6 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-primary/30 bg-primary/[0.06] px-5 py-3.5">
             <p className="flex items-center gap-2.5 text-sm">
               <Sparkles className="h-4 w-4 text-primary" /> Just exploring? Load a sample business to see the full analysis instantly.

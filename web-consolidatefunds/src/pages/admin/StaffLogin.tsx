@@ -36,7 +36,7 @@ export default function StaffLogin() {
         <div className="panel w-full max-w-md p-7 sm:p-8">
           <span className="grid h-11 w-11 place-items-center rounded-lg bg-secondary text-primary">{stage === "creds" ? <KeyRound className="h-5 w-5" /> : <ShieldCheck className="h-5 w-5" />}</span>
           <h1 className="mt-5 text-2xl font-bold">{stage === "creds" ? "Staff sign in" : "Two-factor verification"}</h1>
-          <p className="mt-1 text-sm text-muted-foreground">{stage === "creds" ? "Underwriting workspace — authorized staff only." : `Enter the 6-digit code from your authenticator app for ${email}.`}</p>
+          <p className="mt-1 text-sm text-muted-foreground">{stage === "creds" ? "Underwriting workspace; authorized staff only." : `Enter the 6-digit code from your authenticator app for ${email}.`}</p>
 
           {stage === "creds" ? (
             <form
@@ -73,7 +73,7 @@ export default function StaffLogin() {
               </InputOTP>
               {error && <p className="mt-3 text-sm text-danger">{error}</p>}
               <p className="mt-4 rounded-lg bg-secondary px-3 py-2 text-xs text-muted-foreground">
-                Demo environment — use code <span className="mono text-foreground">{DEMO_CODE}</span>. Use an email starting with “admin” for the Admin role.
+                Demo environment: use code <span className="mono text-foreground">{DEMO_CODE}</span>. Use an email starting with “admin” for the Admin role.
               </p>
               <button onClick={() => setStage("creds")} className="mt-4 text-sm text-muted-foreground hover:text-foreground">
                 Use a different account

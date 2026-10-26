@@ -60,7 +60,7 @@ export function ReviewStep({ analysis }: { analysis: FullAnalysis }) {
                 {emailStatus.skipped > 0 ? `; ${emailStatus.skipped} file${emailStatus.skipped > 1 ? "s" : ""} could not be attached and will be requested separately` : ""}.
             </p>
           ) : (
-            <p className="mt-3 text-sm text-warning">Your application was received, but the email notification failed ({emailStatus.error}). Our team can still see your file — or reach us at applications@consolidatefunds.com.</p>
+            <p className="mt-3 text-sm text-warning">Your application was received, but the email notification failed ({emailStatus.error}). Our team can still see your file, or reach us at applications@consolidatefunds.com.</p>
           ))}
         <div className="mt-6 flex flex-wrap justify-center gap-3">
           <Link to="/scenarios" className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground">
@@ -179,7 +179,7 @@ export function ReviewStep({ analysis }: { analysis: FullAnalysis }) {
                   sendApplicationEmail(draft, attachments, skipped).then((r) => {
                     setEmailStatus({ ...r, attached: attachments.length, skipped: skipped.length });
                     if (!r.ok) toast.error("Email notification failed", { description: r.error });
-                    else if (skipped.length) toast.message("Some files were not attached", { description: `${skipped.map((s) => s.name).join(", ")} exceeded the email size limit — our team will request them separately.` });
+                    else if (skipped.length) toast.message("Some files were not attached", { description: `${skipped.map((s) => s.name).join(", ")} exceeded the email size limit; our team will request them separately.` });
                   }),
                 )
                 .catch(() => setEmailStatus({ ok: false, error: "Could not prepare the uploaded files", attached: 0, skipped: 0 }));

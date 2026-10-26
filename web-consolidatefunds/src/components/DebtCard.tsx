@@ -69,7 +69,7 @@ export function DebtCard({ debt, row, open, onToggle, onChange, onRemove }: { de
 
           {isMca && (
             <>
-              <Callout>Factor rate is a total cost multiple on purchased receivables — not an annual interest rate (APR). We keep MCA purchased amounts separate from loan principal and interest.</Callout>
+              <Callout>Factor rate is a total cost multiple on purchased receivables, not an annual interest rate (APR). We keep MCA purchased amounts separate from loan principal and interest.</Callout>
               <div className="grid gap-x-5 gap-y-4 sm:grid-cols-2 lg:grid-cols-3">{renderDefs(cfg.extra)}</div>
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
                 <Readout k="Factor rate" v={fr ? `${fr.toFixed(2)}×` : "—"} />

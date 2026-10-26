@@ -197,6 +197,8 @@ export interface Application {
   id: string;
   ref: string;
   createdAt: string;
+  /** True while the draft holds the "Load sample business" demo data. */
+  sample?: boolean;
   updatedAt: string;
   submittedAt?: string;
   status: AppStatus;

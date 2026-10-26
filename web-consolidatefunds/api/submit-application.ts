@@ -233,7 +233,7 @@ export default async function handler(req: Req, res: Res) {
   const html = `<!doctype html><html><body style="margin:0;background:#f0f0ee;padding:16px;">
   <table width="100%" cellpadding="0" cellspacing="0" style="max-width:760px;margin:0 auto;background:#ffffff;border:1px solid #e4e4e0;border-radius:8px;">
     <tr><td style="padding:22px 24px;border-bottom:3px solid #C6F432;">
-      <div style="font-family:Arial,sans-serif;font-size:20px;font-weight:bold;color:#111;">New Application — ${esc(b.legalName || "Unknown business")}</div>
+      <div style="font-family:Arial,sans-serif;font-size:20px;font-weight:bold;color:#111;">New Application: ${esc(b.legalName || "Unknown business")}</div>
       <div style="font-family:Arial,sans-serif;font-size:13px;color:#8A8F98;margin-top:4px;">Reference ${esc(app.ref)} · received ${esc(new Date().toLocaleString("en-US"))}</div>
     </td></tr>
 
@@ -255,7 +255,7 @@ export default async function handler(req: Req, res: Res) {
     ${wrap("Owners & Guarantors", owners.length ? `<table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;">${owners
       .map(
         (o) => `<tr><td style="padding:12px 12px;border:1px solid #e4e4e0;font-family:Arial,sans-serif;font-size:13px;vertical-align:top;">
-          <strong>${esc(o.name)}</strong> — ${esc(o.title || "Owner")}${o.ownership ? `, ${esc(o.ownership)}% ownership` : ""}
+          <strong>${esc(o.name)}</strong> · ${esc(o.title || "Owner")}${o.ownership ? `, ${esc(o.ownership)}% ownership` : ""}
           ${table([
             ["Home address", esc(addr(o))],
             ["SSN", esc(o.ssn)],
@@ -300,8 +300,8 @@ export default async function handler(req: Req, res: Res) {
       .map((d) => {
         const name = safeName(d.name || "document");
         return `<tr><td style="padding:12px 12px;border:1px solid #e4e4e0;font-family:Arial,sans-serif;font-size:13px;vertical-align:top;">
-          <strong>${esc(name)}</strong> — ${esc(d.category)} · ${esc(d.status)} · ${esc(d.uploadedBy)}<br/>
-          <span style="color:${attachedNames.has(name) ? "#1a7f37" : "#b45309"};">${attachedNames.has(name) ? "Attached to this email" : "Listed only — file not attached"}</span>
+          <strong>${esc(name)}</strong> · ${esc(d.category)} · ${esc(d.status)} · ${esc(d.uploadedBy)}<br/>
+          <span style="color:${attachedNames.has(name) ? "#1a7f37" : "#b45309"};">${attachedNames.has(name) ? "Attached to this email" : "Listed only, file not attached"}</span>
         </td></tr>`;
       })
       .join("")}</table>` : `<p style="margin:0;font-family:Arial,sans-serif;font-size:13px;color:#8A8F98;">None uploaded</p>`)}
@@ -311,7 +311,7 @@ export default async function handler(req: Req, res: Res) {
     </div>`) : ""}
 
     <tr><td style="padding:16px 24px 24px 24px;border-top:1px solid #e4e4e0;">
-      <p style="margin:0;font-family:Arial,sans-serif;font-size:11px;color:#8A8F98;">Submitted via ConsolidateFunds.com — a broker, not a lender. Owner SSN/DOB are for identity verification by licensed partners only.</p>
+      <p style="margin:0;font-family:Arial,sans-serif;font-size:11px;color:#8A8F98;">Submitted via ConsolidateFunds.com, a broker, not a lender. Owner SSN/DOB are for identity verification by licensed partners only.</p>
     </td></tr>
   </table></body></html>`;
 

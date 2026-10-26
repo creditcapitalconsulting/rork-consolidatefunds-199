@@ -131,7 +131,7 @@ export const DEBT_TYPES: Record<DebtType, DebtTypeConfig> = {
         key: "reconciliation",
         label: "Reconciliation provision",
         kind: "select",
-        options: opts("Included — not yet requested", "Included — requested", "Not included", "Unknown"),
+        options: opts("Included, not yet requested", "Included, requested", "Not included", "Unknown"),
       },
       {
         key: "defaultStatus",
@@ -414,7 +414,7 @@ export const ASSET_TYPES: Record<AssetCategory, AssetConfig> = {
       { key: "aging61", label: "61 – 90 days", kind: "money" },
       { key: "aging90", label: "Over 90 days", kind: "money" },
       { key: "topCustomerPct", label: "Largest customer % of AR", kind: "percent" },
-      { key: "collectibility", label: "Collectibility", kind: "select", options: opts("Strong — rarely disputed", "Average", "Frequent disputes / slow pay") },
+      { key: "collectibility", label: "Collectibility", kind: "select", options: opts("Strong, rarely disputed", "Average", "Frequent disputes / slow pay") },
       { key: "factored", label: "Existing factoring arrangement", kind: "select", options: opts("None", "Some invoices factored", "All invoices factored") },
       { key: "existingAdvance", label: "Amount currently advanced / assigned", kind: "money" },
     ],
