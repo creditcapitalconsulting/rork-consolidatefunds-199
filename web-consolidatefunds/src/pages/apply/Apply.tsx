@@ -73,7 +73,13 @@ export default function Apply() {
   const idx = STEPS.findIndex((s) => s.slug === step);
   const analysis = useMemo(() => analyzeApplication(draft, settings), [draft, settings]);
 
-  useEffect(() => window.scrollTo({ top: 0 }), [idx]);
+  useEffect(() => {
+    try {
+      window.scrollTo({ top: 0 });
+    } catch {
+      /* some embedded browsers restrict scrolling — ignore */
+    }
+  }, [idx]);
 
   if (!step) return <Navigate to="/apply/business" replace />;
   if (idx < 0) return <Navigate to="/apply/business" replace />;

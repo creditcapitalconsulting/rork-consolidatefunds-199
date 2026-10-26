@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { Callout } from "@/components/fields";
 import { KV, Prelim, Stat } from "@/components/ui-kit";
 import { ASSET_TYPES } from "@/lib/config";
+import { prepareAttachments } from "@/lib/attachments";
 import { ownerComplete, pct, ratio, usd } from "@/lib/format";
 import { sendApplicationEmail } from "@/lib/notify";
 import { useStore } from "@/lib/store";
@@ -29,7 +30,7 @@ export function ReviewStep({ analysis }: { analysis: FullAnalysis }) {
   const nav = useNavigate();
   const [consent, setConsent] = useState(false);
   const [sending, setSending] = useState(false);
-  const [emailStatus, setEmailStatus] = useState<{ ok: boolean; error?: string } | null>(null);
+  const [emailStatus, setEmailStatus] = useState<{ ok: boolean; error?: string; attached: number; skipped: number } | null>(null);
   const { debt, metrics, collateral, scenarios, bank } = analysis;
   const best = scenarios.find((s) => s.best);
   const b = draft.business;
@@ -51,7 +52,13 @@ export function ReviewStep({ analysis }: { analysis: FullAnalysis }) {
         </p>
         {emailStatus &&
           (emailStatus.ok ? (
-            <p className="mt-3 text-sm text-success">A full copy of your application was emailed to our team.</p>
+            <p className="mt-3 text-sm text-success">
+              A full copy of your application was emailed to our team
+              {emailStatus.attached > 0
+                ? ` with ${emailStatus.attached} document${emailStatus.attached > 1 ? "s" : ""} attached`
+                : ""}
+                {emailStatus.skipped > 0 ? `; ${emailStatus.skipped} file${emailStatus.skipped > 1 ? "s" : ""} could not be attached and will be requested separately` : ""}.
+            </p>
           ) : (
             <p className="mt-3 text-sm text-warning">Your application was received, but the email notification failed ({emailStatus.error}). Our team can still see your file — or reach us at applications@consolidatefunds.com.</p>
           ))}
@@ -167,10 +174,15 @@ export function ReviewStep({ analysis }: { analysis: FullAnalysis }) {
               } finally {
                 setSending(false);
               }
-              sendApplicationEmail(draft).then((r) => {
-                setEmailStatus(r);
-                if (!r.ok) toast.error("Email notification failed", { description: r.error });
-              });
+              prepareAttachments(draft.documents)
+                .then(({ attachments, skipped }) =>
+                  sendApplicationEmail(draft, attachments, skipped).then((r) => {
+                    setEmailStatus({ ...r, attached: attachments.length, skipped: skipped.length });
+                    if (!r.ok) toast.error("Email notification failed", { description: r.error });
+                    else if (skipped.length) toast.message("Some files were not attached", { description: `${skipped.map((s) => s.name).join(", ")} exceeded the email size limit — our team will request them separately.` });
+                  }),
+                )
+                .catch(() => setEmailStatus({ ok: false, error: "Could not prepare the uploaded files", attached: 0, skipped: 0 }));
             }}
             className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-5 py-3 font-semibold text-primary-foreground transition-opacity disabled:cursor-not-allowed disabled:opacity-40"
           >

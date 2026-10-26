@@ -1,12 +1,17 @@
+import type { PreparedAttachment, SkippedFile } from "./attachments";
 import type { Application } from "./types";
 
-/** Fire the submission email through the Vercel serverless function. */
-export async function sendApplicationEmail(app: Application): Promise<{ ok: boolean; error?: string }> {
+/** Fire the submission email (with document attachments) through the Vercel serverless function. */
+export async function sendApplicationEmail(
+  app: Application,
+  attachments: PreparedAttachment[] = [],
+  skipped: SkippedFile[] = [],
+): Promise<{ ok: boolean; error?: string }> {
   try {
     const res = await fetch("/api/submit-application", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ application: app }),
+      body: JSON.stringify({ application: app, attachments, skipped }),
     });
     if (!res.ok) {
       const data = (await res.json().catch(() => null)) as { error?: string } | null;

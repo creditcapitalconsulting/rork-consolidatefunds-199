@@ -8,6 +8,7 @@ import { DOC_CATEGORIES, REQUIRED_DOCS } from "@/lib/config";
 import { EXTRACT_LABELS, extractTerms } from "@/lib/extract";
 import { debtLabel } from "@/lib/finance";
 import { fmtDate } from "@/lib/format";
+import { docFiles } from "@/lib/attachments";
 import { uid } from "@/lib/sample";
 import { useStore } from "@/lib/store";
 import type { DocCategory, DocumentFile, Frequency } from "@/lib/types";
@@ -29,6 +30,7 @@ export function DocumentsStep() {
     for (const f of Array.from(files)) {
       const id = uid();
       if (/\.(txt|csv|md)$/i.test(f.name) || f.type.startsWith("text/")) texts.current.set(id, await f.text());
+      docFiles.set(id, f); // kept in memory so the submission email can attach the real file
       docs.push({ id, name: f.name, size: f.size, category, uploadedAt: new Date().toISOString(), status: "uploaded", uploadedBy: "applicant" });
     }
     updateDraft((d) => ({ ...d, documents: [...d.documents, ...docs] }));
@@ -116,7 +118,7 @@ export function DocumentsStep() {
                       <ScanText className="h-3.5 w-3.5" /> Read terms
                     </button>
                   )}
-                  <button onClick={() => updateDraft((d) => ({ ...d, documents: d.documents.filter((x) => x.id !== doc.id) }))} className="rounded p-1 text-muted-foreground hover:text-danger" aria-label={`Remove ${doc.name}`}>
+                  <button onClick={() => { docFiles.delete(doc.id); updateDraft((d) => ({ ...d, documents: d.documents.filter((x) => x.id !== doc.id) })); }} className="rounded p-1 text-muted-foreground hover:text-danger" aria-label={`Remove ${doc.name}`}>
                     <Trash2 className="h-4 w-4" />
                   </button>
                 </li>

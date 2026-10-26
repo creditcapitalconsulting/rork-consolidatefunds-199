@@ -8,13 +8,15 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { DEFAULT_SETTINGS } from "./config";
+import { ASSET_TYPES, DEBT_TYPES, DEFAULT_SETTINGS } from "./config";
 import {
   blankOwner,
   emptyApplication,
   emptyBusiness,
   emptyFinancials,
   hydrateBank,
+  newAsset,
+  newDebt,
   sampleDraft,
   seedApplications,
   uid,
@@ -34,40 +36,69 @@ const strip = (a: Application): Application =>
     : a;
 
 /** Bring anything loaded from storage up to the current schema — older builds may be missing fields. */
+const isObj = (x: unknown): x is Record<string, unknown> =>
+  typeof x === "object" && x !== null && !Array.isArray(x);
+
 function normalizeApp(raw: unknown): Application {
-  const a = (typeof raw === "object" && raw ? raw : {}) as Record<
-    string,
-    unknown
-  >;
+  try {
+    return normalizeAppInner(raw);
+  } catch {
+    // Any unexpected storage shape falls back to a clean application instead of crashing the wizard.
+    return emptyApplication();
+  }
+}
+
+function normalizeAppInner(raw: unknown): Application {
+  const a = isObj(raw) ? raw : {};
   const base = emptyApplication();
-  const b = (
-    typeof a.business === "object" && a.business ? a.business : {}
-  ) as Record<string, unknown>;
+  const b = isObj(a.business) ? a.business : {};
   const owners = (
-    (Array.isArray(b.owners) ? b.owners : base.business.owners) as unknown[]
-  ).map((o) => ({ ...blankOwner(), ...(typeof o === "object" && o ? o : {}) }));
+    Array.isArray(b.owners) ? b.owners.filter(isObj) : base.business.owners
+  ).map((o) => ({ ...blankOwner(), ...o }) as Application["business"]["owners"][number]);
   return {
     ...base,
     ...a,
-    business: { ...base.business, ...b, owners } as Application["business"],
+    business: { ...base.business, ...b, owners },
     financials: {
       ...emptyFinancials(),
-      ...(typeof a.financials === "object" && a.financials ? a.financials : {}),
+      ...(isObj(a.financials) ? a.financials : {}),
     },
     bank: {
       ...base.bank,
-      ...(typeof a.bank === "object" && a.bank ? a.bank : {}),
+      ...(isObj(a.bank) ? a.bank : {}),
     },
-    debts: Array.isArray(a.debts) ? (a.debts as Application["debts"]) : [],
-    assets: Array.isArray(a.assets) ? (a.assets as Application["assets"]) : [],
-    documents: Array.isArray(a.documents)
-      ? (a.documents as Application["documents"])
-      : [],
-    notes: Array.isArray(a.notes) ? (a.notes as Application["notes"]) : [],
-    audit: Array.isArray(a.audit) ? (a.audit as Application["audit"]) : [],
-    docRequests: Array.isArray(a.docRequests)
-      ? (a.docRequests as Application["docRequests"])
-      : [],
+    debts: (Array.isArray(a.debts) ? a.debts : [])
+      .filter(isObj)
+      .filter((d) => (d.type as string) in DEBT_TYPES)
+      .map((d) => ({
+        ...newDebt(d.type as Parameters<typeof newDebt>[0]),
+        ...d,
+        fields: isObj(d.fields)
+          ? Object.fromEntries(
+              Object.entries(d.fields)
+                .filter(([, v]) => typeof v === "string" || typeof v === "number")
+                .map(([k, v]) => [k, String(v)]),
+            )
+          : {},
+      })) as Application["debts"],
+    assets: (Array.isArray(a.assets) ? a.assets : [])
+      .filter(isObj)
+      .filter((s) => (s.category as string) in ASSET_TYPES)
+      .map((s) => ({
+        ...newAsset(s.category as Parameters<typeof newAsset>[0]),
+        ...s,
+        fields: isObj(s.fields)
+          ? Object.fromEntries(
+              Object.entries(s.fields)
+                .filter(([, v]) => typeof v === "string" || typeof v === "number")
+                .map(([k, v]) => [k, String(v)]),
+            )
+          : {},
+      })) as Application["assets"],
+    documents: (Array.isArray(a.documents) ? a.documents : []).filter(isObj).map((d) => ({ ...d })) as unknown as Application["documents"],
+    notes: (Array.isArray(a.notes) ? a.notes : []).filter(isObj).map((d) => ({ ...d })) as unknown as Application["notes"],
+    audit: (Array.isArray(a.audit) ? a.audit : []).filter(isObj).map((d) => ({ ...d })) as unknown as Application["audit"],
+    docRequests: (Array.isArray(a.docRequests) ? a.docRequests : []).filter(isObj).map((d) => ({ ...d })) as unknown as Application["docRequests"],
   };
 }
 
@@ -183,8 +214,12 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     return () => clearTimeout(t);
   }, [draft]);
 
-  useEffect(() => save(K.apps, apps.map(strip)), [apps]);
-  useEffect(() => save(K.settings, settings), [settings]);
+  useEffect(() => {
+    save(K.apps, apps.map(strip));
+  }, [apps]);
+  useEffect(() => {
+    save(K.settings, settings);
+  }, [settings]);
 
   const updateDraft = useCallback(
     (fn: (d: Application) => Application) =>

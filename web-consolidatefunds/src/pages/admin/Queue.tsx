@@ -35,7 +35,9 @@ export default function Queue() {
   const [dialog, setDialog] = useState<"docs" | "approve" | "decline" | null>(null);
   const [note, setNote] = useState("");
 
-  useEffect(() => setQ(params.get("q") ?? ""), [params]);
+  useEffect(() => {
+    setQ(params.get("q") ?? "");
+  }, [params]);
 
   const submitted = useMemo(() => apps.filter((a) => a.status !== "draft"), [apps]);
   const analyses = useMemo(() => new Map<string, FullAnalysis>(submitted.map((a) => [a.id, analyzeApplication(a, settings)])), [submitted, settings]);

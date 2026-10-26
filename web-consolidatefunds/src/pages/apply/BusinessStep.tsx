@@ -151,7 +151,7 @@ export function BusinessStep() {
       </Section>
 
       <Section
-        title="Owners & guarantors"
+        title="Owners & Guarantors"
         description="List everyone with 20% or more ownership."
         action={
           <span
