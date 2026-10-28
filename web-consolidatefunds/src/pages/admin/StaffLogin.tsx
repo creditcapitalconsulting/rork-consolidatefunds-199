@@ -1,4 +1,4 @@
-import { ArrowLeft, KeyRound, ShieldCheck } from "lucide-react";
+import { ArrowLeft, KeyRound, Loader2, ShieldCheck } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Field } from "@/components/fields";
@@ -6,24 +6,83 @@ import { Logo } from "@/components/Logo";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { useStore } from "@/lib/store";
 
-const DEMO_CODE = "246810";
+type Stage = "creds" | "mfa";
+
+interface StaffResponse {
+  ok?: boolean;
+  token?: string;
+  error?: string;
+  staff?: { name: string; email: string; role: "Underwriter" | "Admin" };
+}
 
 export default function StaffLogin() {
   const { signIn } = useStore();
-  const [email, setEmail] = useState("m.reyes@consolidatefunds.com");
-  const [password, setPassword] = useState("demo-password");
-  const [stage, setStage] = useState<"creds" | "mfa">("creds");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [stage, setStage] = useState<Stage>("creds");
+  const [token, setToken] = useState("");
   const [code, setCode] = useState("");
   const [error, setError] = useState("");
+  const [busy, setBusy] = useState(false);
 
-  const verify = (c: string) => {
-    if (c === DEMO_CODE) {
-      const local = email.split("@")[0] ?? "staff";
-      const name = local.includes(".") ? local.split(".").map((p, i) => (i === 0 ? p[0].toUpperCase() + "." : p[0].toUpperCase() + p.slice(1))).join(" ") : local;
-      signIn({ name, email, role: email.startsWith("admin") ? "Admin" : "Underwriter" });
-    } else {
-      setError("That code didn't match. Try again.");
+  const request = async (body: Record<string, unknown>): Promise<{ status: number; data: StaffResponse }> => {
+    const r = await fetch("/api/staff-otp", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+    let data: StaffResponse = {};
+    try {
+      data = (await r.json()) as StaffResponse;
+    } catch {
+      /* non-JSON error */
+    }
+    return { status: r.status, data };
+  };
+
+  const sendCode = async () => {
+    if (!/^\S+@\S+\.\S+$/.test(email) || password.length < 4) {
+      setError("Enter a valid email and password.");
+      return;
+    }
+    setError("");
+    setBusy(true);
+    try {
+      const { status, data } = await request({ action: "send", email });
+      if (status === 403) {
+        setError("This email is not authorized.");
+        return;
+      }
+      if (status === 200 && data.ok && data.token) {
+        setToken(data.token);
+        setStage("mfa");
+        return;
+      }
+      setError(data.error || "Sign-in service is unavailable. Please try again later.");
+    } catch {
+      setError("Sign-in service is unavailable. Please try again later.");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const verify = async (c: string) => {
+    setError("");
+    setBusy(true);
+    try {
+      const { status, data } = await request({ action: "verify", email, token, code: c });
+      if (status === 200 && data.ok && data.staff) {
+        signIn({ name: data.staff.name, email: data.staff.email, role: data.staff.role });
+        return;
+      }
+      if (data.token) setToken(data.token); // keep the attempt counter in sync
+      setError(data.error || "That code didn't match. Try again.");
       setCode("");
+    } catch {
+      setError("Sign-in service is unavailable. Please try again later.");
+      setCode("");
+    } finally {
+      setBusy(false);
     }
   };
 
@@ -36,22 +95,22 @@ export default function StaffLogin() {
         <div className="panel w-full max-w-md p-7 sm:p-8">
           <span className="grid h-11 w-11 place-items-center rounded-lg bg-secondary text-primary">{stage === "creds" ? <KeyRound className="h-5 w-5" /> : <ShieldCheck className="h-5 w-5" />}</span>
           <h1 className="mt-5 text-2xl font-bold">{stage === "creds" ? "Staff sign in" : "Two-factor verification"}</h1>
-          <p className="mt-1 text-sm text-muted-foreground">{stage === "creds" ? "Underwriting workspace; authorized staff only." : `Enter the 6-digit code from your authenticator app for ${email}.`}</p>
+          <p className="mt-1 text-sm text-muted-foreground">{stage === "creds" ? "Underwriting workspace; authorized staff only." : `Enter the 6-digit code we emailed to ${email}. It expires in 10 minutes.`}</p>
 
           {stage === "creds" ? (
             <form
               className="mt-6 space-y-4"
               onSubmit={(e) => {
                 e.preventDefault();
-                if (!/^\S+@\S+\.\S+$/.test(email) || password.length < 4) return setError("Enter a valid email and password.");
-                setError("");
-                setStage("mfa");
+                if (!busy) void sendCode();
               }}
             >
               <Field label="Work email" type="email" value={email} onChange={setEmail} />
               <Field label="Password" type="password" value={password} onChange={setPassword} />
               {error && <p className="text-sm text-danger">{error}</p>}
-              <button className="w-full rounded-lg bg-primary py-3 font-semibold text-primary-foreground">Continue</button>
+              <button disabled={busy} className="flex w-full items-center justify-center gap-2 rounded-lg bg-primary py-3 font-semibold text-primary-foreground disabled:opacity-60">
+                {busy && <Loader2 className="h-4 w-4 animate-spin" />} Continue
+              </button>
             </form>
           ) : (
             <div className="mt-6">
@@ -59,10 +118,11 @@ export default function StaffLogin() {
                 maxLength={6}
                 value={code}
                 autoFocus
+                disabled={busy}
                 onChange={(v) => {
                   setCode(v);
                   setError("");
-                  if (v.length === 6) verify(v);
+                  if (v.length === 6 && !busy) void verify(v);
                 }}
               >
                 <InputOTPGroup className="w-full justify-between">
@@ -71,13 +131,21 @@ export default function StaffLogin() {
                   ))}
                 </InputOTPGroup>
               </InputOTP>
+              {busy && <p className="mt-3 flex items-center gap-2 text-sm text-muted-foreground"><Loader2 className="h-3.5 w-3.5 animate-spin" /> Verifying code…</p>}
               {error && <p className="mt-3 text-sm text-danger">{error}</p>}
-              <p className="mt-4 rounded-lg bg-secondary px-3 py-2 text-xs text-muted-foreground">
-                Demo environment: use code <span className="mono text-foreground">{DEMO_CODE}</span>. Use an email starting with “admin” for the Admin role.
-              </p>
-              <button onClick={() => setStage("creds")} className="mt-4 text-sm text-muted-foreground hover:text-foreground">
-                Use a different account
-              </button>
+              <div className="mt-4 flex items-center gap-4 text-sm text-muted-foreground">
+                <button onClick={() => { setStage("creds"); setError(""); }} className="hover:text-foreground">
+                  Use a different account
+                </button>
+                {!busy && (
+                  <button
+                    onClick={() => void sendCode()}
+                    className="hover:text-foreground"
+                  >
+                    Resend code
+                  </button>
+                )}
+              </div>
             </div>
           )}
           <Link to="/" className="mt-6 inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground">

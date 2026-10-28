@@ -1,6 +1,7 @@
-import { ArrowLeft, ArrowRight, Check, Eraser, FlaskConical, Sparkles } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, Eraser, FlaskConical, Sparkles, Trash2 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { SiteHeader } from "@/components/SiteHeader";
 import { ownerComplete } from "@/lib/format";
 import { toast } from "sonner";
@@ -27,24 +28,68 @@ export const STEPS = [
 
 export type StepSlug = (typeof STEPS)[number]["slug"];
 
-function useNow(ms = 15000) {
-  const [now, setNow] = useState(Date.now());
-  useEffect(() => {
-    const t = setInterval(() => setNow(Date.now()), ms);
-    return () => clearInterval(t);
-  }, [ms]);
-  return now;
+function LoadSampleControl({ compact = false, onLoad }: { compact?: boolean; onLoad: () => void }) {
+  const trigger = (
+    <button
+      className={cn(
+        "inline-flex items-center gap-1.5 rounded-lg border border-border font-medium text-muted-foreground transition-colors hover:border-primary/50 hover:bg-primary/10 hover:text-primary",
+        compact ? "px-3 py-1.5 text-[13px]" : "px-3.5 py-2 text-[13px]",
+      )}
+      aria-label="Load the sample business"
+    >
+      <Sparkles className="h-3.5 w-3.5" /> Load sample
+    </button>
+  );
+  return (
+    <AlertDialog>
+      <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>
+      <AlertDialogContent className="border-border bg-card">
+        <AlertDialogHeader>
+          <AlertDialogTitle>Replace your answers with the sample?</AlertDialogTitle>
+          <AlertDialogDescription>
+            The sample business overwrites everything you've entered so far. This can't be undone.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Keep my answers</AlertDialogCancel>
+          <AlertDialogAction className="bg-primary text-primary-foreground hover:bg-primary/90" onClick={onLoad}>
+            Yes, load the sample
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
 }
 
-function AutosaveIndicator({ lastSaved }: { lastSaved: number | null }) {
-  const now = useNow();
-  const secs = lastSaved ? Math.max(0, Math.round((now - lastSaved) / 1000)) : null;
-  const label = secs === null ? "Autosave on" : secs < 10 ? "Autosaved just now" : secs < 60 ? `Autosaved ${secs}s ago` : `Autosaved ${Math.round(secs / 60)} min ago`;
+function ClearDraftControl({ compact = false, onClear }: { compact?: boolean; onClear: () => void }) {
   return (
-    <span className="flex items-center gap-2 text-sm text-muted-foreground" aria-live="polite">
-      <span className="h-2.5 w-2.5 rounded-full bg-success" />
-      {label}
-    </span>
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
+        <button
+          className={cn(
+            "inline-flex items-center gap-1.5 rounded-lg border border-danger/50 bg-danger/10 font-semibold text-danger transition-colors hover:bg-danger/20 active:bg-danger/25",
+            compact ? "px-3 py-1.5 text-[13px]" : "px-3.5 py-2 text-[13px]",
+          )}
+          aria-label="Clear the saved draft and start over"
+        >
+          <Trash2 className="h-3.5 w-3.5" /> Clear
+        </button>
+      </AlertDialogTrigger>
+      <AlertDialogContent className="border-border bg-card">
+        <AlertDialogHeader>
+          <AlertDialogTitle>Clear this application?</AlertDialogTitle>
+          <AlertDialogDescription>
+            This deletes everything you've entered so far. This can't be undone.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Keep my answers</AlertDialogCancel>
+          <AlertDialogAction className="bg-danger text-white hover:bg-danger/85" onClick={onClear}>
+            Yes, clear everything
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 }
 
@@ -70,7 +115,7 @@ function stepComplete(slug: StepSlug, d: ReturnType<typeof useStore>["draft"]) {
 export default function Apply() {
   const { step } = useParams();
   const nav = useNavigate();
-  const { draft, lastSaved, loadSampleDraft, resetDraft, settings } = useStore();
+  const { draft, loadSampleDraft, resetDraft, settings } = useStore();
   const idx = STEPS.findIndex((s) => s.slug === step);
   const analysis = useMemo(() => analyzeApplication(draft, settings), [draft, settings]);
 
@@ -99,20 +144,61 @@ export default function Apply() {
   return (
     <div className="min-h-screen bg-background">
       <SiteHeader />
-      <main className="mx-auto max-w-[1400px] px-5 pb-24 pt-7 lg:px-10">
-        <div className="flex flex-wrap items-start justify-between gap-4">
+      <main className="mx-auto max-w-[1400px] px-5 pb-24 pt-5 lg:px-10 lg:pt-7">
+        <div className="flex items-center justify-between gap-3">
+          <Link to={idx === 0 ? "/" : `/apply/${STEPS[idx - 1].slug}`} className="inline-flex items-center gap-2 rounded text-[15px] text-muted-foreground hover:text-foreground">
+            <ArrowLeft className="h-4 w-4" /> {idx === 0 ? "Back to Home" : `Back to ${STEPS[idx - 1].label}`}
+          </Link>
+          {!empty && (
+            <div className="flex items-center gap-2 sm:hidden">
+              {!isSample && (
+                <LoadSampleControl
+                  compact
+                  onLoad={() => {
+                    loadSampleDraft();
+                    toast.success("Sample business loaded", { description: "Explore the numbers, then clear it to start your own." });
+                    nav("/apply/business");
+                  }}
+                />
+              )}
+              <ClearDraftControl
+                compact
+                onClear={() => {
+                  resetDraft();
+                  toast.success("Application cleared", { description: "Everything was deleted. You're starting fresh." });
+                  nav("/apply/business");
+                }}
+              />
+            </div>
+          )}
+        </div>
+        <div className="mt-3 flex flex-wrap items-end justify-between gap-4">
           <div>
-            <Link to={idx === 0 ? "/" : `/apply/${STEPS[idx - 1].slug}`} className="inline-flex items-center gap-2 rounded text-[15px] text-muted-foreground hover:text-foreground">
-              <ArrowLeft className="h-4 w-4" /> {idx === 0 ? "Back to Home" : `Back to ${STEPS[idx - 1].label}`}
-            </Link>
-            <h1 className="mt-4 text-3xl font-bold tracking-tight sm:text-[40px] sm:leading-[1.1]">{cur.title}</h1>
+            <h1 className="text-2xl font-bold tracking-tight sm:text-3xl sm:leading-[1.15]">{cur.title}</h1>
             <p className="mt-2 text-[15px] text-muted-foreground sm:text-[17px]">{cur.sub}</p>
           </div>
-          <div className="flex flex-wrap items-center gap-x-6 gap-y-2 pt-1 sm:pt-8">
+          <div className="hidden flex-wrap items-center gap-x-4 gap-y-2 pb-1 sm:flex">
             <span className="text-[15px] text-muted-foreground">
               Application <span className="num text-foreground">{idx + 1}</span> of 7
             </span>
-            <AutosaveIndicator lastSaved={lastSaved} />
+            {!empty && !isSample && (
+              <LoadSampleControl
+                onLoad={() => {
+                  loadSampleDraft();
+                  toast.success("Sample business loaded", { description: "Explore the numbers, then clear it to start your own." });
+                  nav("/apply/business");
+                }}
+              />
+            )}
+            {!empty && (
+              <ClearDraftControl
+                onClear={() => {
+                  resetDraft();
+                  toast.success("Application cleared", { description: "Everything was deleted. You're starting fresh." });
+                  nav("/apply/business");
+                }}
+              />
+            )}
           </div>
         </div>
 

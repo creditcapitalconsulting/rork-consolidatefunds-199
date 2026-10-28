@@ -78,7 +78,7 @@ export function AssetsStep({ analysis }: { analysis: FullAnalysis }) {
             <h2 className="font-semibold">Collateral summary</h2>
             <Prelim />
           </div>
-          <div className="num mt-5 text-4xl font-bold tracking-tight text-primary">{usd(col.capacity)}</div>
+          <div className="num mt-5 text-3xl font-bold tracking-tight text-primary">{usd(col.capacity)}</div>
           <div className="text-sm text-muted-foreground">Preliminary borrowing capacity</div>
           <div className="mt-5 divide-y divide-border/60">
             <KV k="Gross asset value" v={usd(col.grossValue)} />

@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { PreviewBannerOffset } from "@/components/PreviewBannerOffset";
 import { StoreProvider } from "@/lib/store";
 
 import Landing from "./pages/Landing";
@@ -23,6 +24,7 @@ const App = () => (
     <StoreProvider>
       <TooltipProvider>
         <Toaster theme="dark" position="bottom-right" />
+        <PreviewBannerOffset />
         <ErrorBoundary>
           <BrowserRouter
             future={{ v7_startTransition: true, v7_relativeSplatPath: true }}

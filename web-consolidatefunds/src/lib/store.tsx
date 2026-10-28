@@ -24,7 +24,6 @@ import {
 import type { Application, AuditEntry, UnderwritingSettings } from "./types";
 
 const K = {
-  draft: "cf.draft.v2",
   apps: "cf.apps.v2",
   settings: "cf.settings.v2",
   staff: "cf.staff.v2",
@@ -156,7 +155,11 @@ export interface Staff {
   name: string;
   email: string;
   role: "Underwriter" | "Admin";
+  /** Session expiry (ms epoch). Staff sessions last 12 hours. */
+  exp?: number;
 }
+
+export const STAFF_SESSION_MS = 12 * 60 * 60 * 1000;
 
 interface Store {
   draft: Application;
@@ -183,9 +186,17 @@ interface Store {
 const Ctx = createContext<Store | null>(null);
 
 export function StoreProvider({ children }: { children: ReactNode }) {
-  const [draft, setDraft] = useState<Application>(() =>
-    hydrateBank(normalizeApp(load<unknown>(K.draft, () => ({}) as unknown))),
-  );
+  // The draft intentionally lives in memory only: every page load starts a fresh,
+  // empty application. Submitted applications are still stored (staff queue).
+  const [draft, setDraft] = useState<Application>(() => {
+    // Purge any draft an older version may have persisted; drafts never restore.
+    try {
+      localStorage.removeItem("cf.draft.v2");
+    } catch {
+      /* ignore */
+    }
+    return hydrateBank(emptyApplication());
+  });
   const [apps, setApps] = useState<Application[]>(() => {
     const stored = load<unknown>(K.apps, () => []);
     const list = Array.isArray(stored) ? stored : [];
@@ -196,23 +207,20 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const [settings, setSettingsState] = useState<UnderwritingSettings>(() =>
     normalizeSettings(load<unknown>(K.settings, () => ({}) as unknown)),
   );
-  const [staff, setStaff] = useState<Staff | null>(() =>
-    load<Staff | null>(K.staff, () => null, sessionStorage),
-  );
-  const [lastSaved, setLastSaved] = useState<number | null>(null);
-  const firstDraft = useRef(true);
-
-  useEffect(() => {
-    if (firstDraft.current) {
-      firstDraft.current = false;
-      return;
+  const [staff, setStaff] = useState<Staff | null>(() => {
+    const s = load<Staff | null>(K.staff, () => null, sessionStorage);
+    if (!s || typeof s !== "object") return null;
+    if (s.exp && s.exp < Date.now()) {
+      try {
+        sessionStorage.removeItem(K.staff);
+      } catch {
+        /* ignore */
+      }
+      return null;
     }
-    const t = setTimeout(() => {
-      save(K.draft, strip(draft));
-      setLastSaved(Date.now());
-    }, 500);
-    return () => clearTimeout(t);
-  }, [draft]);
+    return s;
+  });
+  const [lastSaved, setLastSaved] = useState<number | null>(null);
 
   useEffect(() => {
     save(K.apps, apps.map(strip));
@@ -295,8 +303,9 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   );
 
   const signIn = useCallback((s: Staff) => {
-    setStaff(s);
-    save(K.staff, s, sessionStorage);
+    const session: Staff = { ...s, exp: Date.now() + STAFF_SESSION_MS };
+    setStaff(session);
+    save(K.staff, session, sessionStorage);
   }, []);
   const signOut = useCallback(() => {
     setStaff(null);

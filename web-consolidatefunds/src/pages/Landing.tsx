@@ -23,10 +23,10 @@ export default function Landing() {
       {/* HERO */}
       <section className="relative overflow-hidden">
         <div className="grid-bg pointer-events-none absolute inset-0" />
-        <div className="relative mx-auto grid max-w-[1400px] gap-14 px-5 pb-20 pt-14 lg:grid-cols-[1.05fr_1fr] lg:px-10 lg:pt-20">
+        <div className="relative mx-auto grid max-w-[1400px] gap-14 px-5 pb-16 pt-10 lg:grid-cols-[1.05fr_1fr] lg:px-10 lg:pt-16">
           <div className="fade-up">
-            <p className="eyebrow mb-5">Business debt broker · not a lender</p>
-            <h1 className="text-[44px] font-bold leading-[0.98] tracking-[-0.04em] sm:text-6xl xl:text-[78px]">
+            <p className="eyebrow mb-5">Business debt restructuring · Commercial finance brokerage</p>
+            <h1 className="text-[34px] font-bold leading-[1.02] tracking-[-0.03em] sm:text-5xl xl:text-[60px]">
               Every Debt.
               <br />
               Every Asset.
@@ -35,11 +35,11 @@ export default function Landing() {
               <br />
               Financial Solution.
             </h1>
-            <p className="mt-7 max-w-xl text-lg leading-relaxed text-muted-foreground">
+            <p className="mt-7 max-w-xl text-[15px] leading-relaxed text-muted-foreground sm:text-base">
               Tell us about every MCA, loan, card, mortgage and tax balance you carry, and every asset you own. Our underwriting engine figures out the consolidation or refinancing structure that frees up the most cash, then we place it with the right funding partner.
             </p>
             <div className="mt-9 flex flex-wrap items-center gap-x-6 gap-y-4">
-              <Link to="/apply" className="group inline-flex items-center gap-2 rounded-xl bg-primary px-7 py-4 text-[17px] font-semibold text-primary-foreground transition-transform hover:-translate-y-0.5">
+              <Link to="/apply" className="group inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-3.5 text-[15px] font-semibold text-primary-foreground transition-transform hover:-translate-y-0.5">
                 Start your application <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
               </Link>
               <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground">No obligation · No hard pull · Autosaves</p>
@@ -55,7 +55,7 @@ export default function Landing() {
             <div className="mt-6 grid gap-8 sm:grid-cols-[1fr_auto_1fr] sm:items-start">
               <div>
                 <p className="eyebrow">Before consolidation</p>
-                <p className="num mt-2 text-4xl font-bold tracking-tight sm:text-[44px]">
+                <p className="num mt-2 text-3xl font-bold tracking-tight sm:text-4xl">
                   $39,000<span className="text-xl font-medium text-muted-foreground">/mo</span>
                 </p>
                 <ul className="mt-5 space-y-3">
@@ -125,7 +125,7 @@ export default function Landing() {
             ["1", "application for everything"],
           ].map(([k, v]) => (
             <div key={v} className="bg-background px-6 py-7 lg:px-10">
-              <div className="num text-4xl font-bold text-primary">{k}</div>
+              <div className="num text-3xl font-bold text-primary sm:text-4xl">{k}</div>
               <div className="mt-1 text-sm text-muted-foreground">{v}</div>
             </div>
           ))}
@@ -133,9 +133,9 @@ export default function Landing() {
       </section>
 
       {/* HOW */}
-      <section id="how" className="mx-auto max-w-[1400px] scroll-mt-20 px-5 py-24 lg:px-10">
+      <section id="how" className="mx-auto max-w-[1400px] scroll-mt-20 px-5 py-16 lg:py-20 lg:px-10">
         <p className="eyebrow">How it works</p>
-        <h2 className="mt-3 max-w-3xl text-4xl font-bold leading-tight sm:text-5xl">We don't lend. We figure out the solution, then find who should fund it.</h2>
+        <h2 className="mt-3 max-w-3xl text-3xl font-bold leading-tight sm:text-4xl">We don't lend. We figure out the solution, then find who should fund it.</h2>
         <div className="mt-14 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
           {[
             { icon: Layers, n: "01", t: "Disclose everything once", d: "Seven short steps. You only see questions that apply to the debts and assets you add." },
@@ -155,11 +155,11 @@ export default function Landing() {
 
       {/* SOLUTIONS */}
       <section id="solutions" className="scroll-mt-20 border-y border-border bg-card/40">
-        <div className="mx-auto max-w-[1400px] px-5 py-24 lg:px-10">
+        <div className="mx-auto max-w-[1400px] px-5 py-16 lg:py-20 lg:px-10">
           <div className="flex flex-wrap items-end justify-between gap-6">
             <div>
               <p className="eyebrow">Debt solutions</p>
-              <h2 className="mt-3 text-4xl font-bold sm:text-5xl">If it's an obligation, we can analyze it.</h2>
+              <h2 className="mt-3 text-3xl font-bold sm:text-4xl">If it's an obligation, we can analyze it.</h2>
             </div>
             <p className="max-w-md text-muted-foreground">MCA factor rates are treated as purchased receivables, never confused with APR. Every schedule, from business-daily ACH to quarterly tax installments, is normalized to the same monthly yardstick.</p>
           </div>
@@ -178,11 +178,11 @@ export default function Landing() {
       </section>
 
       {/* ASSETS */}
-      <section id="assets" className="mx-auto grid max-w-[1400px] scroll-mt-20 gap-14 px-5 py-24 lg:grid-cols-2 lg:px-10">
+      <section id="assets" className="mx-auto grid max-w-[1400px] scroll-mt-20 gap-14 px-5 py-16 lg:py-20 lg:grid-cols-2 lg:px-10">
         <div>
           <p className="eyebrow">Asset-based financing</p>
-          <h2 className="mt-3 text-4xl font-bold sm:text-5xl">Your balance sheet is leverage. Use it.</h2>
-          <p className="mt-5 text-lg leading-relaxed text-muted-foreground">We estimate preliminary borrowing capacity from every asset you disclose, then use it to replace expensive daily-pay debt with longer, cheaper secured financing.</p>
+          <h2 className="mt-3 text-3xl font-bold sm:text-4xl">Your balance sheet is leverage. Use it.</h2>
+          <p className="mt-5 text-[15px] leading-relaxed text-muted-foreground sm:text-base">We estimate preliminary borrowing capacity from every asset you disclose, then use it to replace expensive daily-pay debt with longer, cheaper secured financing.</p>
           <Link to="/apply" className="mt-8 inline-flex items-center gap-2 rounded-xl border border-border px-6 py-3.5 font-medium hover:border-primary hover:text-primary">
             See what your assets support <ArrowRight className="h-4 w-4" />
           </Link>
@@ -206,7 +206,7 @@ export default function Landing() {
 
       {/* FAQ */}
       <section id="faq" className="mx-auto max-w-[900px] scroll-mt-20 px-5 pb-24">
-        <h2 className="text-center text-4xl font-bold">Questions, answered</h2>
+        <h2 className="text-center text-3xl font-bold sm:text-4xl">Questions, answered</h2>
         <Accordion type="single" collapsible className="mt-10">
           {[
             ["Are you a lender?", "No. ConsolidateFunds is a broker and analysis platform. We evaluate your full financial position, design the structure that fits, and place it with third-party funding partners."],
@@ -227,7 +227,7 @@ export default function Landing() {
       <section className="mx-auto max-w-[1400px] px-5 pb-20 lg:px-10">
         <div className="flex flex-col items-start justify-between gap-6 rounded-2xl bg-primary p-10 text-primary-foreground md:flex-row md:items-center lg:p-14">
           <div>
-            <h2 className="text-3xl font-bold sm:text-4xl">See your true monthly debt burden in minutes.</h2>
+            <h2 className="text-2xl font-bold sm:text-3xl">See your true monthly debt burden in minutes.</h2>
             <p className="mt-2 text-primary-foreground/75">Your progress saves automatically; finish whenever you're ready.</p>
           </div>
           <Link to="/apply" className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-background px-7 py-4 font-semibold text-foreground transition-transform hover:-translate-y-0.5">

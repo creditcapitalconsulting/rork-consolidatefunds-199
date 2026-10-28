@@ -31,7 +31,7 @@ export function SiteHeader({ variant = "app" }: { variant?: "public" | "app" }) 
     .toUpperCase();
 
   return (
-    <header className="no-print sticky top-0 z-40 border-b border-border/70 bg-background/85 backdrop-blur-md">
+    <header className="no-print sticky z-40 border-b border-border/70 bg-background/85 backdrop-blur-md" style={{ top: "var(--preview-offset, 0px)", transition: "top 0.2s ease" }}>
       <div className="mx-auto flex h-[68px] max-w-[1400px] items-center gap-8 px-5 lg:px-10">
         <Logo />
         <nav className="hidden flex-1 items-center gap-1 md:flex" aria-label="Main">

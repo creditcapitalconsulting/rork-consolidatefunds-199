@@ -58,12 +58,19 @@
 
   html {
     color-scheme: dark;
+    /* Fluid fit: scales the whole UI with the viewport instead of feeling zoomed in.
+       ~14.6px on phones, ~15.2px on tablets, ~15.6px on large desktops. */
+    font-size: clamp(14.5px, calc(14.5px + (100vw - 390px) * 0.00052), 15.75px);
   }
 
   body {
     @apply bg-background text-foreground antialiased;
     font-family: "Geist", ui-sans-serif, system-ui, sans-serif;
     font-feature-settings: "ss01", "cv11";
+    /* Reserved for the preview-only "Your app is in preview" card, so the
+       header (logo, nav) is never covered while previewing. Zero when absent. */
+    padding-top: var(--preview-offset, 0px);
+    transition: padding-top 0.2s ease;
   }
 
   h1,

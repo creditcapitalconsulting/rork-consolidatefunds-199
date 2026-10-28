@@ -15,7 +15,11 @@ export function LogoMark({ className }: { className?: string }) {
 
 export function Logo({ to = "/", className }: { to?: string; className?: string }) {
   return (
-    <Link to={to} className={cn("flex items-center gap-2.5 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring", className)}>
+    <Link
+      to={to}
+      aria-label="ConsolidateFunds.com home"
+      className={cn("flex items-center gap-2.5 rounded-md transition-opacity hover:opacity-75 active:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring", className)}
+    >
       <LogoMark />
       <span className="text-[19px] font-semibold tracking-tight">
         ConsolidateFunds<span className="font-normal text-muted-foreground">.com</span>

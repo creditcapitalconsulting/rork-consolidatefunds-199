@@ -40,7 +40,7 @@ export default function Scenarios() {
         </Link>
         <div className="mt-4 flex flex-wrap items-end justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight sm:text-[40px] sm:leading-[1.1]">Compare Your Consolidation Scenarios</h1>
+            <h1 className="text-2xl font-bold tracking-tight sm:text-3xl sm:leading-[1.15]">Compare Your Consolidation Scenarios</h1>
             <p className="mt-2 text-[17px] text-muted-foreground">Same debts. Different solutions. See how much you could save.</p>
           </div>
           {draft.debts.length > 0 && (

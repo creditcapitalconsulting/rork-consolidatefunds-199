@@ -88,7 +88,7 @@ export default function Queue() {
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
             <div className="eyebrow">Underwriting</div>
-            <h1 className="mt-2 text-3xl font-bold tracking-tight sm:text-[36px]">Application Queue</h1>
+            <h1 className="mt-2 text-2xl font-bold tracking-tight sm:text-3xl">Application Queue</h1>
             <p className="mt-1.5 text-[15px] text-muted-foreground">Review, analyze, and make a decision on business debt consolidation applications.</p>
           </div>
           <div className="flex gap-2">
